@@ -1,0 +1,23 @@
+---
+- name: Install Matomo
+  hosts: all
+  vars:
+    mdb_dbname: "matomodb"
+    mdb_username: "mariadb_admin"
+    mdb_password: "pw_set_by_ansible"
+  become: yes
+  tasks:
+    - name: Create Maria DB Database
+      community.mysql.mysql_db:
+        name: matomodb
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+    - name: Add Admin User to MariaDB Database
+        name: "{{ mdb_username }}"
+        password: "{{ mdb_password }}"
+        host: localhost
+        state: present
+        update_password: on_create
+        priv: "{{ mdb_dbname }}.*:ALL"
+    - name: Show Completion
+      command: "touch /tmp/ansible_finished"
