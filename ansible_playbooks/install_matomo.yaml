@@ -7,12 +7,15 @@
     mdb_password: "pw_set_by_ansible"
   become: yes
   tasks:
+    - name: Start MariaDB
+      action: service name=mysql state=started
     - name: Create Maria DB Database
       community.mysql.mysql_db:
         name: matomodb
         state: present
         login_unix_socket: /var/run/mysqld/mysqld.sock
     - name: Add Admin User to MariaDB Database
+      community.mysql.mysql_user:
         name: "{{ mdb_username }}"
         password: "{{ mdb_password }}"
         host: localhost
