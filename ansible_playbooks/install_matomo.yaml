@@ -22,5 +22,8 @@
         state: present
         update_password: on_create
         priv: "{{ mdb_dbname }}.*:ALL"
-    - name: Show Completion
-      command: "touch /tmp/ansible_finished"
+    - name: Download and Extract Matomo
+      ansible.builtin.unarchive:
+        src: https://builds.matomo.org/matomo.zip
+        dest: /etc
+        remote_src: yes
