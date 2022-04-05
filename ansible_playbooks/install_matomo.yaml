@@ -27,3 +27,4 @@
         src: https://builds.matomo.org/matomo.zip
         dest: /etc
         remote_src: yes
+        creates: /etc/matomo
