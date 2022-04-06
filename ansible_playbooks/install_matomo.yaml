@@ -25,6 +25,11 @@
     - name: Download and Extract Matomo
       ansible.builtin.unarchive:
         src: https://builds.matomo.org/matomo.zip
-        dest: /etc
+        dest: /var/www/html
         remote_src: yes
-        creates: /etc/matomo
+        creates: /var/www/html/matomo
+    - name: Set Matomo Directory Permissions
+        path: /var/www/html/matomo
+        recurse: yes
+        owner: www-data
+        group: www-data
