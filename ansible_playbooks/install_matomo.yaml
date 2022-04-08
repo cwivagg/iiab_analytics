@@ -5,6 +5,7 @@
     mdb_dbname: "matomodb"
     mdb_username: "mariadb_admin"
     mdb_password: "pw_set_by_ansible"
+    matomo_url: "http://10.0.0.72/matomo/
   become: yes
   tasks:
     - name: Start MariaDB
@@ -33,3 +34,26 @@
         recurse: yes
         owner: www-data
         group: www-data
+    - name: Install Matomo using HTTP requests
+        block:
+        - name: HTTP GET Welcome
+          uri:
+            url: "{{ matomo_url }}index.php?action=welcome"
+            method: GET
+            status_code: 200
+          register: matomo_welcome
+        - name: Debug Welcome HTTP GET
+          debug:
+            var: matomo_welcome
+            verbosity: 2
+        - name: Set a variable for the MATOMO_SESSID cookie
+          set_fact:
+            matomo_session_cookie: "MATOMO_SESSID={{ cookie.value }}"
+          when: cookie.key == "MATOMO_SESSID"
+          loop: "{{ matomo_welcome.cookies | dict2items }}"
+          loop_control:
+            loop_var: cookie
+        - name: Pause
+          pause:
+            seconds: 1
+
